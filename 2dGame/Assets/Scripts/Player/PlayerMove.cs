@@ -1,41 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerMove : MonoBehaviour
 {
     public int PlayerCoin;
     public TextMeshProUGUI cointext;
-
     public Rigidbody2D rb;
     public CapsuleCollider2D col;
     private Renderer rd;
-    private bool grounded;
-    Explode explode;
+    public Animator animator; // Animator bileþeni
+    public bool grounded = true;
     public float moveSpeed;
+    public float jumpForce = 10f; // Zýplama kuvveti
+    private float moveDirection; // Hareket yönü
 
     private void Awake()
     {
-        explode = GetComponent<Explode>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         rd = GetComponent<Renderer>();
+        animator = GetComponent<Animator>(); // Animator bileþenini bul
     }
 
     private void Update()
     {
         PlayerMovement();
-        if (Input.GetKey(KeyCode.Space))
-        {
-
-            transform.localScale = new Vector2(2, 2);
-            transform.position = new Vector2(0, 0);
-            rd.material.color = Color.black;
-
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -46,36 +35,53 @@ public class PlayerMove : MonoBehaviour
             Destroy(other.gameObject);
             cointext.text = "Puan: " + PlayerCoin;
         }
-        if (other.gameObject.tag == "graund")
+        if (other.gameObject.tag == "Yer")
         {
             grounded = true;
+            animator.SetBool("IsJumping", false); // Zýplama animasyonunu durdur
         }
-        else
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Yer")
         {
             grounded = false;
         }
     }
+
     private void PlayerMovement()
     {
+        moveDirection = 0f; // Hareket yönünü sýfýrla
+
         if (Input.GetKey("d"))
         {
-            rb.AddForce(Vector2.right * moveSpeed);
-
+            moveDirection = 1f; // Sað hareket
         }
         else if (Input.GetKey("a"))
         {
-            rb.AddForce(Vector2.left * moveSpeed);
+            moveDirection = -1f; // Sol hareket
         }
-        else if (Input.GetKey("w"))
+
+        // Rigidbody'nin velocity özelliðini kullanarak hareket et
+        rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
+
+        // Koþma animasyonu için
+        if (moveDirection != 0)
         {
-            if (grounded == false)
-            {
-                rb.AddForce(Vector2.up * moveSpeed);
-            }
+            animator.SetBool("Run", true);
+        }
+        else
+        {
+            animator.SetBool("Run", false);
         }
 
-
-
+        // Zýplama
+        if (Input.GetKey("w") && grounded == true)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            grounded = false;
+            animator.SetBool("IsJumping", true); // Zýplama animasyonunu baþlat
+        }
     }
-
 }
