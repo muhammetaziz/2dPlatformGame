@@ -1,3 +1,4 @@
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class PlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         rd = GetComponent<Renderer>();
-        animator = GetComponent<Animator>(); // Animator bileþenini bul
+        animator = gameObject.GetComponent<Animator>(); // Animator bileþenini bul
     }
 
     private void Update()
@@ -54,6 +55,12 @@ public class PlayerMove : MonoBehaviour
     {
         moveDirection = 0f; // Hareket yönünü sýfýrla
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Animator'daki tetikleyiciyi ayarla
+            animator.SetTrigger("NormalAttack"); 
+        }
+
         if (Input.GetKey("d"))
         {
             moveDirection = 1f; // Sað hareket
@@ -66,22 +73,22 @@ public class PlayerMove : MonoBehaviour
         // Rigidbody'nin velocity özelliðini kullanarak hareket et
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
 
-        // Koþma animasyonu için
-        if (moveDirection != 0)
-        {
-            animator.SetBool("Run", true);
-        }
-        else
-        {
-            animator.SetBool("Run", false);
-        }
+        //// Koþma animasyonu için
+        //if (moveDirection != 0)
+        //{
+        //    animator.SetBool("Run", true);
+        //}
+        //else
+        //{
+        //    animator.SetBool("Run", false);
+        //}
 
         // Zýplama
         if (Input.GetKey("w") && grounded == true)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             grounded = false;
-            animator.SetBool("IsJumping", true); // Zýplama animasyonunu baþlat
+            //animator.SetBool("IsJumping", true); // Zýplama animasyonunu baþlat
         }
     }
 }
