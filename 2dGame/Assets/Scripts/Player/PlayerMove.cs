@@ -1,5 +1,6 @@
 using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
@@ -25,6 +26,10 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            animator.SetTrigger("AttackTrigger");
+        }
         PlayerMovement();
     }
 
@@ -39,7 +44,7 @@ public class PlayerMove : MonoBehaviour
         if (other.gameObject.tag == "Yer")
         {
             grounded = true;
-            animator.SetBool("IsJumping", false); // Zýplama animasyonunu durdur
+            //animator.SetBool("IsJumping", false); // Zýplama animasyonunu durdur
         }
     }
 
@@ -53,35 +58,42 @@ public class PlayerMove : MonoBehaviour
 
     private void PlayerMovement()
     {
+        Vector2 yeniScale = transform.localScale;
+
         moveDirection = 0f; // Hareket yönünü sýfýrla
 
         if (Input.GetMouseButtonDown(0))
         {
             // Animator'daki tetikleyiciyi ayarla
-            animator.SetTrigger("NormalAttack"); 
+             
         }
+
 
         if (Input.GetKey("d"))
         {
+            yeniScale.y = 0.5f;
             moveDirection = 1f; // Sað hareket
+
         }
         else if (Input.GetKey("a"))
         {
             moveDirection = -1f; // Sol hareket
-        }
+            yeniScale.y = -0.5f;
 
+        }
         // Rigidbody'nin velocity özelliðini kullanarak hareket et
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
 
-        //// Koþma animasyonu için
-        //if (moveDirection != 0)
-        //{
-        //    animator.SetBool("Run", true);
-        //}
-        //else
-        //{
-        //    animator.SetBool("Run", false);
-        //}
+        // Koþma animasyonu için
+        if (moveDirection != 0)
+        {
+            animator.SetBool("RunBool", true);
+
+        }
+        else
+        {
+            animator.SetBool("RunBool", false);
+        }
 
         // Zýplama
         if (Input.GetKey("w") && grounded == true)
