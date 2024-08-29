@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Bird : MonoBehaviour
 {
@@ -10,7 +11,8 @@ public class Bird : MonoBehaviour
     public PolygonCollider2D col;
     private int puan;
     public TextMeshProUGUI text;
-
+     
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,13 +34,13 @@ public class Bird : MonoBehaviour
     {
         if (other.gameObject.tag == "FlappyPoint")
         {
-            Debug.Log("carpýldý");
             puan++;
             text.text =puan.ToString();
         }
         if (other.gameObject.tag == "engel")
         {
             Destroy(gameObject);
+            
         }
     }
 }

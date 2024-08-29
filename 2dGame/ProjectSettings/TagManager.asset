@@ -8,6 +8,7 @@ TagManager:
   - graund
   - Yer
   - FlappyPoint
+  - DestroyPipe
   layers:
   - Default
   - TransparentFX
